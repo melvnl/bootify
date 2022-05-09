@@ -1,34 +1,30 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<div align="center">
+    <a href="https://github.com/melvnl/bootify">
+        <img src="public/icon-256x256.png" alt="Logo" width="80" height="80" />
+    </a>
+    <h1 align="center">Bootify</h1>
+    <p align="center">
+        a PWA web app that serve it purpose as Poor man's Spotify, listen music freely (Booooooo) through YouTube API
+    </p>
+</div>
 
-## Getting Started
+## Overview
 
-First, run the development server:
+This is not a Spotify replacement, Spotify offers much more immerse and a greater music experience. Bootify serves it's purpose as an alternative version for people who are broke/stingy enough to pay. I create this project to replace Youtube as my music player when I work out.
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+## YouTube has an API?
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Yup! With YouTube’s API, you can do things like manage your videos, access analytics, fetch requested video, and etc. See the [documentation](https://developers.google.com/youtube/v3/docs)
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## Pros
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+FREE 💸
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## Cons 
 
-## Learn More
+- Consume more internet data instead (approximately 5Mb for every minute the song is being played), while approximately Spotify only consume 2mb every 3 minutes you play a song. This can happen due to the fact that Bootify actually render an embedded video from YT but hidden from the application client interface.
+- Projects that enable the YouTube Data API have a default quota allocation of 10,000 units per day, search request cost 100 units, see for [more](https://developers.google.com/youtube/v3/getting-started#quota)
 
-To learn more about Next.js, take a look at the following resources:
+## Contributing
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Contributions are welcome! Feel free to open a pull request.
