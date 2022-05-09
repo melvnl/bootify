@@ -1,12 +1,17 @@
 import React, { useState } from "react";
 import { Form, FormState } from "lib/types";
 import LoadingSpinner from "./LoadingSpinner";
+import SnippetCard from "./SnippetCard";
 import ErrorMessage from "./ErrorMessage";
 
 export default function SearchBar() {
   const [form, setForm] = useState<FormState>({ state: Form.Initial });
   const [searchValue, setSearchValue] = useState("");
   const [videoId, setVideoId] = useState("");
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const [title, setTitle] = useState("");
+  const [thumbnail, setThumbnail] = useState("");
 
   const searchSong = async (e: any) => {
     e.preventDefault();
@@ -14,20 +19,27 @@ export default function SearchBar() {
     console.log(searchValue);
     const title = searchValue.replaceAll(" ", "%20");
     const YOUTUBE_SEARCH =
-      "https://www.googleapis.com/youtube/v3/search?maxResults=1&q=";
+      "https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&q=";
     const res: any = await fetch(
       `${YOUTUBE_SEARCH}${title}&type=video&videoCategoryId=10&key=${process.env.NEXT_PUBLIC_YOUTUBE_API_KEY}`
     );
     const data = await res.json();
 
-    if (res) {
+    if (data) {
       setVideoId(data.items[0].id.videoId);
+      setTitle(data.items[0].snippet.title);
+      setThumbnail(data.items[0].snippet.thumbnails.default.url);
       setForm({
         state: Form.Success,
         message: `Success`,
       });
+      setIsPlaying(true);
     }
   };
+
+  const iframeURL = isPlaying
+    ? `https://www.youtube.com/embed/${videoId}?autoplay=1`
+    : `https://www.youtube.com/embed/${videoId}`;
 
   return (
     <div className=" font-sans w-full border border-gray-200 p-4 rounded-md">
@@ -51,14 +63,17 @@ export default function SearchBar() {
       {form.state === Form.Error ? (
         <ErrorMessage>{form.message}</ErrorMessage>
       ) : form.state === Form.Success ? (
-        <iframe
-          className=" w-full h-full"
-          src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
-          frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-          title={searchValue}
-        />
+        <>
+          <iframe
+            className=" hidden"
+            src={iframeURL}
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            title={searchValue}
+          />
+          <SnippetCard title={title} thumbnail={thumbnail} />
+        </>
       ) : null}
     </div>
   );
