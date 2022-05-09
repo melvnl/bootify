@@ -1,14 +1,16 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Form, FormState } from "lib/types";
 import LoadingSpinner from "./LoadingSpinner";
 import SnippetCard from "./SnippetCard";
 import ErrorMessage from "./ErrorMessage";
+import Image from "next/image";
 
 export default function SearchBar() {
   const [form, setForm] = useState<FormState>({ state: Form.Initial });
   const [searchValue, setSearchValue] = useState("");
   const [videoId, setVideoId] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
+  const iframeVideoRef = useRef<HTMLIFrameElement | null>(null);
 
   const [title, setTitle] = useState("");
   const [thumbnail, setThumbnail] = useState("");
@@ -33,13 +35,30 @@ export default function SearchBar() {
         state: Form.Success,
         message: `Success`,
       });
-      setIsPlaying(true);
     }
   };
 
-  const iframeURL = isPlaying
-    ? `https://www.youtube.com/embed/${videoId}?autoplay=1`
-    : `https://www.youtube.com/embed/${videoId}`;
+  const sendCommand = (func: string, args?: any) => {
+    setIsPlaying(!isPlaying);
+    const iframe = iframeVideoRef.current;
+    if (iframe) {
+      const src = iframe.getAttribute("src");
+      if (src) {
+        if (iframe.contentWindow) {
+          iframe.contentWindow.postMessage(
+            JSON.stringify({
+              event: "command",
+              func: func,
+              args: args || [],
+            }),
+            "*"
+          );
+        }
+      }
+    }
+  };
+
+  const iframeURL = `https://www.youtube.com/embed/${videoId}?enablejsapi=1`;
 
   return (
     <div className=" font-sans w-full border border-gray-200 p-4 rounded-md">
@@ -66,6 +85,7 @@ export default function SearchBar() {
         <>
           <iframe
             className=" hidden"
+            ref={iframeVideoRef}
             src={iframeURL}
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -74,6 +94,33 @@ export default function SearchBar() {
           />
           <SnippetCard title={title} thumbnail={thumbnail} />
         </>
+      ) : null}
+      {form.state === Form.Success ? (
+        !isPlaying ? (
+          <button
+            onClick={() => sendCommand("playVideo")}
+            className=" w-full py-2 mt-2 font-bold text-sm bg-primary text-secondary rounded-md"
+          >
+            <Image
+              src="/play-button.svg"
+              width={32}
+              height={32}
+              alt="play control"
+            />
+          </button>
+        ) : (
+          <button
+            onClick={() => sendCommand("pauseVideo")}
+            className=" w-full py-2 mt-2 font-bold text-sm bg-primary text-secondary rounded-md"
+          >
+            <Image
+              src="/stop-button.svg"
+              width={32}
+              height={32}
+              alt="stop control"
+            />
+          </button>
+        )
       ) : null}
     </div>
   );
