@@ -58,7 +58,7 @@ export default function SearchBar() {
     }
   };
 
-  const iframeURL = `https://www.youtube.com/embed/${videoId}?enablejsapi=1`;
+  const iframeURL = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&vq=small`;
 
   return (
     <div className=" font-sans w-full border border-gray-200 p-4 rounded-md">
